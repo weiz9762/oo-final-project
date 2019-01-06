@@ -3,7 +3,7 @@ class Student
 
   def initialize(name)
     @name = name.capitalize
-    @score = 100
+    @score = 65
     @lateness = 0
     @absences = 0
     @absence_dates = []
@@ -45,7 +45,9 @@ class Student
     self.checklist[subject].delete(hw)
     if self.checklist[subject] == []
       self.checklist.delete(subject)
+      self.score += 5
     end
+    self.score += 1
   end
 
   def view_status
@@ -63,18 +65,19 @@ end
 class Teacher
   attr_accessor :name, :subject, :hw
 
-  def initialize(name)
+  def initialize(name, subject)
+    @subject = subject
     @name = name
     @hws_assigned = {}
   end
 
   def phone_call(student_name)
     if student_name.score < 65
-      "need to work harder"
+      puts "I'm #{student_name.name}'#{@subject} teacher. I just want to inform you that your child's great didn't meet the branchmark, and he should pay more attention in the dlass"
     elsif student_name.absences > 5 || student_name.lateness > 10
-      "Need to come to class more"
+    puts "I'm #{student_name}'#{@subject} teacher. I just want to inform you that your child's attendance seems to be a problem, is there anything that I can do to help?" 
     else
-      "Great work"
+      puts "Great work"
     end
   end
 
@@ -94,11 +97,34 @@ wei.late("jan 1st")
 wei.late("feb 1st")
 wei.absence("july 5th")
 
-terzano = Teacher.new( "terzano")
-terzano.phone_call(wei)
+zheng = Student.new("Zheng")
+
+
+mueller = Teacher.new("Mr. Mueller", "sep")
+mueller.assign_work("sep", "oo_project", wei)
+mueller.assign_work("sep", "oo_project", zheng)
+
+
+terzano = Teacher.new("Mr. Terzano", "physics")
 terzano.assign_work("physics","page 101", wei)
 terzano.assign_work("physics","page 01", wei)
-terzano.assign_work("math","page 01", wei)
+terzano.assign_work("physics","page 101", zheng)
+terzano.assign_work("physics","page 01", zheng)
+
+terzano.phone_call(wei)
+mueller.phone_call(zheng)
+
 wei.doing_hw("physics", "page 101")
-# puts wei.view_checklist
 wei.view_status
+zheng.view_status
+
+# puts "What is your name"
+# user_name = gets.chomp
+# Student.new(user_name)
+# puts "How many class do you have?"
+# class_num = gets.chomp.to_i
+# class_num.times {
+#   puts "Who is your teacher?"
+#   user_teacher = gets.chomp
+#   Teacher.new(user_teacher)
+# }
