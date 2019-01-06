@@ -41,6 +41,13 @@ class Student
     @promotion
   end
 
+  def doing_hw(subject, hw)
+    self.checklist[subject].delete(hw)
+    if self.checklist[subject] == []
+      self.checklist.delete(subject)
+    end
+  end
+
   def view_status
     puts "#{self.name}:
     Grade: #{self.score}.
@@ -48,8 +55,8 @@ class Student
     Total Latesness: #{@lateness} (#{@late_dates.join(", ")})
     Total Absences: #{@absences} (#{@absence_dates.join(", ")})
     Promotion Tracker: #{self.promotion_tracker}"
-    
   end
+
 end
 
 
@@ -89,8 +96,9 @@ wei.absence("july 5th")
 
 terzano = Teacher.new( "terzano")
 terzano.phone_call(wei)
-# terzano.assign_work("physics","page 101", wei)
-# terzano.assign_work("physics","page 01", wei)
-# terzano.assign_work("math","page 01", wei)
-puts wei.view_checklist
+terzano.assign_work("physics","page 101", wei)
+terzano.assign_work("physics","page 01", wei)
+terzano.assign_work("math","page 01", wei)
+wei.doing_hw("physics", "page 101")
+# puts wei.view_checklist
 wei.view_status
