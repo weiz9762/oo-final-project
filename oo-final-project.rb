@@ -1,5 +1,5 @@
 class Student
-  attr_accessor :name, :checklist, :score, :lateness, :absences, :promition
+  attr_accessor :name, :hw_checklist, :checklist, :score, :lateness, :absences, :promotion
 
   def initialize(name)
     @name = name.capitalize
@@ -8,56 +8,57 @@ class Student
     @absences = 0
     @absence_dates = []
     @late_dates = []
-    @promition = ""
+    @promotion = ""
+    @checklist = {}
   end
 
   def late(date)
-    @score -= 1
+    @score -= 3
     @lateness += 1
     @late_dates << date.capitalize
   end
 
   def absence(date)
-    @score -= 2
+    @score -= 5
     @absences += 1
     @absence_dates << date.capitalize
   end
 
-  # def promotion_tracker(name)
-  #   if name.absence < 30 && name.grade > 65
-  #     @promotion = "on track"
-  #   else
-  #     @promotion = "off track"
-  #   end
-  # end
-
-  def view_status
-    puts "#{@name}:
-    Grade: #{@score}.
-    Total Latesness: #{@lateness} (#{@late_dates.join(", ")})
-    Total Absences: #{@absences} (#{@absence_dates.join(", ")})
-    **Promotion Tracker: #{@promotion}"
-    
+  def view_checklist
+    if @checklist == {}
+      "NONE"
+    else
+      @checklist.collect { |k,v| "#{k}: #{v}" }.join(", ")
+    end
+  end
+  
+  def promotion_tracker
+    if self.absences < 30 && self.score > 65
+      @promotion = "on track"
+    else
+      @promotion = "off track"
+    end
+    @promotion
   end
 
-
-
-  # def view_checklist
-  #   @checklist
-  # end
+  def view_status
+    puts "#{self.name}:
+    Grade: #{self.score}.
+    HW Checklist: #{self.view_checklist}
+    Total Latesness: #{@lateness} (#{@late_dates.join(", ")})
+    Total Absences: #{@absences} (#{@absence_dates.join(", ")})
+    Promotion Tracker: #{self.promotion_tracker}"
+    
+  end
 end
 
-wei = Student.new("wei")
-# wei.late("jan 1st")
-# wei.late("feb 1st")
-# wei.absence("july 5th")
-# wei.view_status
+
 class Teacher
   attr_accessor :name, :subject, :hw
 
-  def initialize(subject, name)
-    @subject = subject
+  def initialize(name)
     @name = name
+    @hws_assigned = {}
   end
 
   def phone_call(student_name)
@@ -68,12 +69,28 @@ class Teacher
     else
       "Great work"
     end
-
   end
-  # def phone_call
 
-  # end
+  def assign_work(subject, hw, student)
+    # student.checklist[subject] = hw
+    if student.checklist[subject] == nil
+      student.checklist[subject] = []
+      student.checklist[subject] << hw
+    else
+      student.checklist[subject] << hw
+    end
+  end
 end
 
-terzano = Teacher.new("physics", "terzano")
+wei = Student.new("wei")
+wei.late("jan 1st")
+wei.late("feb 1st")
+wei.absence("july 5th")
+
+terzano = Teacher.new( "terzano")
 terzano.phone_call(wei)
+# terzano.assign_work("physics","page 101", wei)
+# terzano.assign_work("physics","page 01", wei)
+# terzano.assign_work("math","page 01", wei)
+puts wei.view_checklist
+wei.view_status
